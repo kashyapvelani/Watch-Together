@@ -1,4 +1,4 @@
-const API_KEY = "9cf92343d7d450fed13da73962c41454";
+const API_KEY = TMDB_API_ENV
 
 const requests = {
   fetchTrending: `movie/upcoming?language=en-US&page=1&api_key=${API_KEY}`,
