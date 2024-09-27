@@ -13,7 +13,7 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 function Player({ params,socket }) {
     const [movies, setMovies] = useState([]);
     const [key, setKey] = useState(null);
-    const API_KEY = "9cf92343d7d450fed13da73962c41454";
+    const API_KEY = TMDB_API_KEY;
 
 
     function onPlayVideo() {
