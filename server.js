@@ -8,8 +8,8 @@ const cors = require("cors");
 const app = express();
 const httpServer = http.createServer(app);
 
-const RTCTOKEN_APP_ID = '9628aabb1b6c42e18df9ff8e195f8f2d'
-const RTCTOKEN_APP_CERTIFICATE = 'c30022b7d7a840e5a280c1eedf699429'
+const RTCTOKEN_APP_ID = 'RTCTOKEN_APP_ID'
+const RTCTOKEN_APP_CERTIFICATE = 'RTCTOKEN_APP_CERTIFICATE'
 
 const nocache = ( req, resp, next ) => {
   resp.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
@@ -91,7 +91,7 @@ const generateRTMToken = (req, resp) => {
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000" || HOST,
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,
