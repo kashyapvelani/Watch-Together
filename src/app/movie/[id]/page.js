@@ -9,7 +9,7 @@ function Details({ params }) {
   
   const [movies, setMovies] = useState([]);
   const [similarMovies, setSimilarMovies] = useState([]);
-  const API_KEY = "9cf92343d7d450fed13da73962c41454";
+  const API_KEY = TMDB_API_KEY;
   useEffect(() => {
     async function fetchData() {
       const request = await axios.get(`/movie/${params.id}?api_key=${API_KEY}&language=en-US&append_to_response=videos`);
