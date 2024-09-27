@@ -7,7 +7,7 @@ function SearchResult({query}) {
     const [movies, setMovies] = useState([]);
     const base_url = 'https://image.tmdb.org/t/p/original/';
 
-    const API_KEY = "9cf92343d7d450fed13da73962c41454";
+    const API_KEY = TMDB_API_KEY;
 
     useEffect(() => {
         async function fetchData() {
