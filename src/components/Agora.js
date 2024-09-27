@@ -8,7 +8,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const appid = "9628aabb1b6c42e18df9ff8e195f8f2d";
+const appid = AGORA_APP_ID;
 const rtcUid = Math.floor(Math.random() * 2032);
 const rtmUid = String(Math.floor(Math.random() * 2032));
 
