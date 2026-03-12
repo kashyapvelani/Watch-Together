@@ -3,90 +3,57 @@ import React, { useState, useEffect } from "react";
 
 import socket from "@/lib/socket";
 import Player from "@/components/Player";
-import { useSearchParams } from "next/navigation";
-import { Peer } from "peerjs";
 import Agora from "@/components/Agora";
-
-const myPeer = new Peer(undefined, {
-  host: "/",
-  port: "3001",
-});
-
-const peers = {};
-
-function reaction(emoji_name) {
-  const react_emoji = document.getElementById(emoji_name);
-  react_emoji.style.display= "flex";
-  setTimeout(function(){
-    react_emoji.style.display= "none";
-  },5000)
-}
-
-function connectToNewUser(userId, stream) {
-  if (peers[userId]) {
-    // console.log("Already connected to this user: ", userId);
-    return;
-  }
-  const call = myPeer.call(userId, stream);
- 
-
-  call.on("close", () => {
-    audio.remove();
-  });
-
-  peers[userId] = call;
-}
-
+import VideoChat from "@/components/VideoChat";
+import { useSearchParams } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 function watch({ params }) {
-  const searchParams = useSearchParams();
-  const roomId = searchParams.get("room");
-  
+  const searchParams  = useSearchParams();
+  const roomId        = searchParams.get("room");
+  const { user }      = useUser();
+
+  // Lifted camera state — Agora.js toggles it, VideoChat.js reads it
+  const [cameraOn, setCameraOn] = useState(false);
 
   useEffect(() => {
+    socket.emit("join-room", roomId, socket.id);
 
-        let isCallAnswered = false;
-        myPeer.on("call", (call) => {
-          if (!isCallAnswered) {
-            isCallAnswered = true;
-            call.answer(stream);
-            // console.log("Call Answered");
-          } else {
-            // console.log("Call already answered. Ignoring additional calls.");
-            call.close();
-          }
-        });
-
-        socket.on("user-connected", (userId) => {
-          console.log("connected user" + userId);
-          // setTimeout(connectToNewUser, 1000, userId, stream);
-          // console.log("Peers: ", peers);
-        });
-
-        socket.on("user-disconnected", (userId) => {
-          if (peers[userId]) {
-            peers[userId].close();
-          }
-          // console.log("Peers: ", peers);
-        });
-      
-
-    myPeer.on("open", (id) => {
-      socket.emit("join-room", roomId, id);
-      // console.log("user joined room");
+    socket.on("user-connected", (userId) => {
+      console.log("connected user: " + userId);
     });
 
-    return () => {};
-  }, []);
+    socket.on("user-disconnected", (userId) => {
+      console.log("disconnected user: " + userId);
+    });
 
-  const roomid = searchParams.get('room');
+    return () => {
+      socket.off("user-connected");
+      socket.off("user-disconnected");
+    };
+  }, [roomId]);
 
   return (
     <main className="p-4 pl-20 flex space-x-4">
-      
+      {/* ── Video player (unchanged) ─────────────────────────────────────── */}
       <Player params={params} socket={socket} />
-      <div>
-          <Agora room={roomid} params={params}/>
+
+      {/* ── Right sidebar ────────────────────────────────────────────────── */}
+      <div className="flex flex-col space-y-4">
+
+        {/* Video chat grid — shows camera feeds for all participants */}
+        <VideoChat
+          room={roomId}
+          localUser={user}
+          cameraOn={cameraOn}
+        />
+
+        {/* Voice chat — member avatars + mic / camera / share / leave controls */}
+        <Agora
+          room={roomId}
+          params={params}
+          onCameraToggle={(on) => setCameraOn(on)}
+        />
       </div>
     </main>
   );

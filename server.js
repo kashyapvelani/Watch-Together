@@ -106,6 +106,30 @@ app.get("/", (req, res) => {
 app.get('/rtc/:channel/:role/:tokentype/:uid', nocache , generateAccessToken);
 app.get('/rtm/:uid/', nocache , generateRTMToken);
 
+// Convenience publisher route used by video chat
+app.get('/rtc-publisher/:channel/uid/:uid', nocache, (req, resp) => {
+  resp.header('Access-Control-Allow-Origin', '*');
+  const channelName = req.params.channel;
+  const uid = req.params.uid;
+  if (!channelName) return resp.status(500).json({ error: 'channel is required' });
+  if (!uid || uid === '') return resp.status(500).json({ error: 'uid is required' });
+
+  let expireTime = req.query.expiry;
+  expireTime = (!expireTime || expireTime === '') ? 3600 : parseInt(expireTime, 10);
+  const currentTime = Math.floor(Date.now() / 1000);
+  const privilegeExpireTime = currentTime + expireTime;
+
+  const token = RtcTokenBuilder.buildTokenWithUid(
+    RTCTOKEN_APP_ID,
+    RTCTOKEN_APP_CERTIFICATE,
+    channelName,
+    uid,
+    RtcRole.PUBLISHER,
+    privilegeExpireTime
+  );
+  return resp.json({ rtcToken: token });
+});
+
 io.on("connection", socket => {
     // console.log("Someone Connected")
     socket.on("join-room",async ( roomId, userId )=>{
