@@ -4,10 +4,10 @@ Watch Together is a web application that allows users to watch movies together i
 
 
 ## Watch Party App with Voice Chat Integration
-![Watch Together App Home](./assets/Home.jpg)
-![Watch Together App Details Page](./assets/Details%20Page.jpg)
-![Watch Together App Search Page](./assets/Search%20Page.jpg)
-![Watch Together App Video Player](./assets/Video%20Player.png)
+![Watch Together App Home](./Home.jpg)
+![Watch Together App Details Page](./Details%20Page.jpg)
+![Watch Together App Search Page](./Search%20Page.jpg)
+![Watch Together App Video Player](./Video%20Player.png)
 
 ## Features
 
